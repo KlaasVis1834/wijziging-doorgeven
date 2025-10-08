@@ -1,39 +1,39 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wijzigingen Doorgeven - Klaas Vis</title>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  
-  <!-- Favicon -->
-  <link rel="icon" href="Logo.png" type="image/png">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css?v=1">
-
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-  <!-- reCAPTCHA -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wijziging Doorgeven - Klaas Vis Assurantiekantoor</title>
+    <link rel="icon" href="Logo.png" type="image/png">
+    <link rel="stylesheet" href="styles.css?v=1">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("fJaMnq7175Ao2O1jn"); // Jouw Public Key
+        })();
+    </script>
 </head>
 <body>
-
-  <!-- Header + Menubalk -->
-  <header class="header">
-    <div class="logo-container">
-      <a href="https://www.klaasvis.nl" class="logo-link">
-        <img src="Logo.png" alt="Klaas Vis Logo" class="main-logo">
-      </a>
+    <!-- Loadingscreen zoals Inboedelwaardemeter -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader"></div>
+        <p>Wijziging wordt verzonden...</p>
     </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="Logo.png" alt="Klaas Vis Assurantiekantoor">
+        </div>
+        <h1>Wijziging Doorgeven</h1>
+    </header>
     <nav class="nav">
       <button class="hamburger">☰</button>
       <ul class="nav-list">
         <li><a href="https://www.klaasvis.nl">Home</a></li>
-        <li><a href="https://klaasvis1834.github.io/contact/">Doorgeven wijziging</a></li>
+        <li><a href="https://klaasvis1834.github.io/wijziging-doorgeven/">Doorgeven wijziging</a></li>
         <li><a href="https://dekkerautoverzekering.github.io/home/">Dekkerautoverzekering</a></li>
         <li><a href="https://www.nh1816.nl/mijn-nh1816">Mijn NH1816 Polis</a></li>
         <li><a href="https://www.klaasvis.nl/downloads">Downloads</a></li>
@@ -41,171 +41,164 @@
       </ul>
     </nav>
   </header>
+    <!-- Main content -->
+    <main class="container">
+        <section class="contact-section">
+            <div class="content-wrapper">
+                <div class="form-wrapper">
+                    <h2>Welke wijziging wilt u doorgeven?</h2>
+                    <p>Kies een optie en vul de benodigde gegevens in. Wij verwerken uw wijziging zo spoedig mogelijk.</p>
 
-  <!-- Wijziging Formulier -->
-  <main class="wijziging-section">
-    <div class="wijziging-content">
-      <h2>Wijziging Doorgeven</h2>
-      <p>Vul hieronder uw wijziging in. Afhankelijk van het type wijziging verschijnen de juiste velden.</p>
-      
-      <form id="wijziging-form" class="wijziging-form">
-        <!-- Persoonlijke gegevens -->
-        <div class="form-group">
-          <label for="voorletters">Voorletter(s) *</label>
-          <input type="text" id="voorletters" name="voorletters" required>
-        </div>
-        <div class="form-group">
-          <label for="achternaam">Achternaam *</label>
-          <input type="text" id="achternaam" name="achternaam" required>
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail *</label>
-          <input type="email" id="email" name="email" required>
-        </div>
+                    <form id="wijziging-form" class="modern-form">
+                        <div class="form-group">
+                            <label for="wijziging-type">Kies uw wijziging</label>
+                            <select id="wijziging-type" name="wijziging-type" required>
+                                <option value="" disabled selected>Selecteer een optie</option>
+                                <option value="adreswijziging">Adreswijziging</option>
+                                <option value="motorvoertuigwijziging">Motorvoertuigwijziging</option>
+                                <option value="verzekering-beëindigen">Verzekering beëindigen</option>
+                                <option value="terugbelverzoek">Terugbelverzoek indienen</option>
+                                <option value="emailwijziging">E-mailwijziging</option>
+                                <option value="anders">Anders</option>
+                            </select>
+                        </div>
 
-        <!-- Wijzigingstype -->
-        <div class="form-group">
-          <label for="wijziging-type">Type wijziging *</label>
-          <select id="wijziging-type" name="wijziging-type" required>
-            <option value="" disabled selected>Kies een type wijziging</option>
-            <option value="adreswijziging">Adreswijziging</option>
-            <option value="motorvoertuigwijziging">Motorvoertuig</option>
-            <option value="verzekering-beëindigen">Verzekering beëindigen</option>
-            <option value="terugbelverzoek">Terugbelverzoek</option>
-            <option value="emailwijziging">E-mail wijzigen</option>
-            <option value="anders">Anders</option>
-          </select>
-        </div>
+                        <!-- Gemeenschappelijke velden -->
+                        <div class="form-group">
+                            <label for="voorletters">Voorletter(s)</label>
+                            <input type="text" id="voorletters" name="voorletters" autocomplete="given-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="achternaam">Achternaam</label>
+                            <input type="text" id="achternaam" name="achternaam" autocomplete="family-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mailadres (optioneel)</label>
+                            <input type="email" id="email" name="email" autocomplete="email">
+                        </div>
 
-        <!-- Dynamische velden -->
-        <div id="adreswijziging-fields-postcode" class="form-group hidden">
-          <label for="nieuwe-postcode">Nieuwe postcode</label>
-          <input type="text" id="nieuwe-postcode" name="nieuwe-postcode">
-        </div>
-        <div id="adreswijziging-fields-huisnummer" class="form-group hidden">
-          <label for="nieuwe-huisnummer">Huisnummer</label>
-          <input type="text" id="nieuwe-huisnummer" name="nieuwe-huisnummer">
-        </div>
-        <div id="adreswijziging-fields-adres" class="form-group hidden">
-          <label for="nieuw-adres">Nieuw adres</label>
-          <input type="text" id="nieuw-adres" name="nieuw-adres" readonly>
-        </div>
-        <div id="adreswijziging-fields-datum" class="form-group hidden">
-          <label for="adreswijziging-datum">Ingangsdatum adreswijziging</label>
-          <input type="date" id="adreswijziging-datum" name="adreswijziging-datum">
-        </div>
+                        <!-- Adreswijziging velden -->
+                        <div class="form-group hidden" id="adreswijziging-fields-postcode">
+                            <label for="nieuwe-postcode">Nieuwe postcode</label>
+                            <input type="text" id="nieuwe-postcode" name="nieuwe-postcode" autocomplete="postal-code">
+                        </div>
+                        <div class="form-group hidden" id="adreswijziging-fields-huisnummer">
+                            <label for="nieuwe-huisnummer">Nieuw huisnummer</label>
+                            <input type="text" id="nieuwe-huisnummer" name="nieuwe-huisnummer" autocomplete="off">
+                        </div>
+                        <div class="form-group hidden" id="adreswijziging-fields-adres">
+                            <label for="nieuw-adres">Nieuw volledig adres</label>
+                            <input type="text" id="nieuw-adres" name="nieuw-adres" readonly>
+                        </div>
+                        <div class="form-group hidden" id="adreswijziging-fields-datum">
+                            <label for="verhuisdatum">Datum van verhuizing</label>
+                            <input type="date" id="verhuisdatum" name="verhuisdatum">
+                        </div>
 
-        <!-- Voeg hier andere dynamische secties toe zoals motorvoertuigwijziging, terugbelverzoek etc. -->
+                        <!-- Motorvoertuigwijziging velden -->
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-datum">
+                            <label for="wijzigingsdatum">Wijzigingsdatum</label>
+                            <input type="date" id="wijzigingsdatum" name="wijzigingsdatum">
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-polisnummer">
+                            <label for="polisnummer-motor">Polisnummer</label>
+                            <input type="text" id="polisnummer-motor" name="polisnummer-motor" autocomplete="off">
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-huidig-kenteken">
+                            <label for="huidig-kenteken">Kenteken huidig voertuig</label>
+                            <input type="text" id="huidig-kenteken" name="huidig-kenteken" autocomplete="off">
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-huidig-merk">
+                            <label for="huidig-merk">Merk huidig voertuig</label>
+                            <input type="text" id="huidig-merk" name="huidig-merk" readonly>
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-huidig-model">
+                            <label for="huidig-model">Model huidig voertuig</label>
+                            <input type="text" id="huidig-model" name="huidig-model" readonly>
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-nieuw-kenteken">
+                            <label for="nieuw-kenteken">Kenteken nieuw voertuig</label>
+                            <input type="text" id="nieuw-kenteken" name="nieuw-kenteken" autocomplete="off">
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-nieuw-merk">
+                            <label for="nieuw-merk">Merk nieuw voertuig</label>
+                            <input type="text" id="nieuw-merk" name="nieuw-merk" readonly>
+                        </div>
+                        <div class="form-group hidden" id="motorvoertuigwijziging-fields-nieuw-model">
+                            <label for="nieuw-model">Model nieuw voertuig</label>
+                            <input type="text" id="nieuw-model" name="nieuw-model" readonly>
+                        </div>
 
-        <!-- reCAPTCHA -->
-        <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6LenGOArAAAAAIM8bxj3lEQAnguib5e1bHTl0XrM"></div>
-        </div>
+                        <!-- Verzekering beëindigen velden -->
+                        <div class="form-group hidden" id="verzekering-beëindigen-fields-datum">
+                            <label for="opzegdatum">Opzegdatum</label>
+                            <input type="date" id="opzegdatum" name="opzegdatum">
+                        </div>
+                        <div class="form-group hidden" id="verzekering-beëindigen-fields-reden">
+                            <label for="reden-beëindiging">Reden van beëindiging</label>
+                            <textarea id="reden-beëindiging" name="reden-beëindiging" rows="4"></textarea>
+                        </div>
 
-        <!-- Verzenden -->
-        <button type="submit" class="btn primary">Wijziging verzenden</button>
-      </form>
-    </div>
-  </main>
+                        <!-- Terugbelverzoek velden -->
+                        <div class="form-group hidden" id="terugbelverzoek-fields-telefoon">
+                            <label for="telefoon">Telefoonnummer</label>
+                            <input type="tel" id="telefoon" name="telefoon" autocomplete="tel">
+                        </div>
+                        <div class="form-group hidden" id="terugbelverzoek-fields-datum">
+                            <label for="voorkeur-datum">Gewenste datum</label>
+                            <input type="date" id="voorkeur-datum" name="voorkeur-datum" class="datepicker">
+                        </div>
+                        <div class="form-group hidden" id="terugbelverzoek-fields-tijd">
+                            <label for="voorkeur-tijd">Gewenst tijdstip</label>
+                            <input type="time" id="voorkeur-tijd" name="voorkeur-tijd" min="09:00" max="16:00">
+                        </div>
 
-  <!-- Loading Screen -->
-  <div id="loadingScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;">
-    <div style="color:white;">Verzenden...</div>
-  </div>
+                        <!-- E-mailwijziging velden -->
+                        <div class="form-group hidden" id="emailwijziging-fields-huidig">
+                            <label for="huidig-email">Huidig e-mailadres</label>
+                            <input type="email" id="huidig-email" name="huidig-email" autocomplete="email">
+                        </div>
+                        <div class="form-group hidden" id="emailwijziging-fields-nieuw">
+                            <label for="nieuw-email">Nieuw e-mailadres</label>
+                            <input type="email" id="nieuw-email" name="nieuw-email" autocomplete="email">
+                        </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <p>© 2025 BV Assurantiekantoor Klaas Vis Ao. 1834 | Alle rechten voorbehouden</p>
-    </div>
-  </footer>
+                        <!-- Anders veld -->
+                        <div class="form-group hidden" id="anders-fields">
+                            <label for="anders-reden">Reden van wijziging</label>
+                            <textarea id="anders-reden" name="anders-reden" rows="4" placeholder="Geef hier aan welke wijziging u wilt doorgeven"></textarea>
+                        </div>
 
-  <!-- JS -->
-  <script>
-    // Hamburger menu
-    document.addEventListener("DOMContentLoaded", function() {
-      const hamburger = document.querySelector(".hamburger");
-      const navList = document.querySelector(".nav-list");
-      if (hamburger && navList) {
-        hamburger.addEventListener("click", function() {
-          navList.classList.toggle("active");
-        });
-      }
-    });
+                        <div class="button-group">
+                            <button type="submit" class="submit-button">Verzenden</button>
+                            <a href="https://www.klaasvis.nl" class="back-button">Terug naar homepage</a>
+                        </div>
+                    </form>
+                </div>
 
-    // Toggle velden op wijziging-type
-    function toggleFields() {
-      const wijzigingType = document.getElementById('wijziging-type').value;
-      const fieldGroups = {
-        'adreswijziging': ['adreswijziging-fields-postcode', 'adreswijziging-fields-huisnummer', 'adreswijziging-fields-adres', 'adreswijziging-fields-datum'],
-        // Voeg hier andere groepen toe...
-      };
+                <!-- Contactgegevens -->
+                <div class="contact-info">
+                    <h3>Onze gegevens</h3>
+                    <p><strong>E-mail:</strong> info@klaasvis.nl</p>
+                    <p><strong>Tel:</strong> 075 – 631 42 61</p>
+                    <p><strong>Bereikbaar:</strong> Op werkdagen van 09:00 tot 16:00</p>
+                    <p><strong>Adres:</strong> Zuiderweg 7, 1456 NC Wijdewormer</p>
 
-      Object.values(fieldGroups).flat().forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.classList.add('hidden');
-      });
+                    <!-- Google Maps -->
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2430.123456789!2d4.876543!3d52.498765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c5e6b8f8d7e9a1%3A0x1234567890abcdef!2sZuiderweg%207%2C%201456%20NC%20Wijdewormer!5e0!3m2!1snl!2snl!4v1698765432100!5m2!1snl!2snl" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-      if (fieldGroups[wijzigingType]) {
-        fieldGroups[wijzigingType].forEach(id => {
-          const element = document.getElementById(id);
-          if (element) element.classList.remove('hidden');
-        });
-      }
-    }
+    <!-- Footer zoals Inboedelwaardemeter -->
+    <footer class="footer">
+        <p>© 2025 BV Assurantiekantoor Klaas Vis Ao. 1834 | Alle rechten voorbehouden</p>
+    </footer>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const selectElement = document.getElementById('wijziging-type');
-      if (selectElement) {
-        selectElement.addEventListener('change', toggleFields);
-        toggleFields();
-      }
-    });
-
-    // Formulier submit met reCAPTCHA
-    document.getElementById('wijziging-form').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const recaptchaResponse = grecaptcha.getResponse();
-      if (!recaptchaResponse) {
-        alert("Bevestig eerst dat u geen robot bent (klik op de reCAPTCHA).");
-        return;
-      }
-
-      // EmailJS integratie
-      const form = this;
-      const formData = new FormData(form);
-      let email = formData.get('email') || 'rbuijs@klaasvis.nl';
-      let emailBody = "Uw wijziging bij Klaas Vis:\n\n";
-      for (let [key, value] of formData.entries()) {
-        if (key !== 'g-recaptcha-response') emailBody += `${key}: ${value}\n`;
-      }
-
-      document.getElementById('loadingScreen').style.display = 'flex';
-
-      emailjs.send("service_hcds2qk", "template_xk3jqlc", {
-        message: emailBody,
-        reply_to: email
-      }).then(() => {
-        return emailjs.send("service_hcds2qk", "template_gco2wsm", {
-          to_email: email,
-          message: emailBody
-        });
-      }).then(() => {
-        document.getElementById('loadingScreen').style.display = 'none';
-        alert("Uw wijziging is verzonden!");
-        form.reset();
-        grecaptcha.reset();
-      }).catch(err => {
-        console.error(err);
-        document.getElementById('loadingScreen').style.display = 'none';
-        alert("Er is een fout opgetreden. Probeer het later opnieuw.");
-      });
-    });
-
-    // EmailJS init
-    emailjs.init("SLdpWo1ZAJkoOj75G");
-  </script>
-
+    <script src="wijziging-script.js?v=1"></script>
 </body>
+
 </html>
