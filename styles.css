@@ -21,6 +21,11 @@ body {
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .logo img {
@@ -34,11 +39,50 @@ h1 {
     margin-top: 10px;
 }
 
+/* Menubalk */
+.nav {
+    margin-top: 10px;
+    position: relative;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-list li a {
+    text-decoration: none;
+    color: #003087;
+    font-weight: 500;
+    padding: 8px 12px;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 5px;
+}
+
+.nav-list li a:hover {
+    background-color: #003087;
+    color: #fff;
+}
+
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #003087;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 /* Container */
 .container {
     flex: 1;
-    max-width: 1200px; /* Vergroot voor zij-aan-zij layout */
-    margin: 40px auto;
+    max-width: 1200px;
+    margin: 140px auto 40px; /* rekening met fixed header */
     padding: 0 20px;
 }
 
@@ -175,7 +219,7 @@ h2 {
     margin-top: 20px;
 }
 
-/* Loadingscreen zoals Inboedelwaardemeter */
+/* Loadingscreen */
 .loading-screen {
     display: none;
     position: fixed;
@@ -210,7 +254,7 @@ h2 {
     100% { transform: rotate(360deg); }
 }
 
-/* Footer zoals Inboedelwaardemeter */
+/* Footer */
 .footer {
     background-color: #003087;
     color: #fff;
@@ -225,16 +269,48 @@ h2 {
 }
 
 /* Mobiele aanpassingen */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .container {
-        margin: 20px auto;
+        margin: 120px auto 20px;
         padding: 0 10px;
     }
 
-    .contact-section {
-        padding: 20px;
+    .hamburger {
+        display: block;
     }
 
+    .nav-list {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #fff;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 15px 0;
+    }
+
+    .nav-list.active {
+        display: flex;
+    }
+
+    .nav-list li {
+        text-align: center;
+    }
+
+    .nav-list li a {
+        display: block;
+        padding: 10px;
+    }
+
+    .content-wrapper {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
     h1 {
         font-size: 1.5rem;
     }
