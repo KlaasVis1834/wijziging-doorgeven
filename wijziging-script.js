@@ -67,15 +67,7 @@ function disableNonWorkingDays() {
     if (!dateInput) return;
 
     const holidays2025 = [
-        '2025-01-01', // Nieuwjaardag
-        '2025-04-18', // Goede Vrijdag
-        '2025-04-21', // Paasmaandag
-        '2025-04-27', // Koningsdag
-        '2025-05-05', // Bevrijdingsdag
-        '2025-05-29', // Hemelvaartsdag
-        '2025-06-09', // Pinkstermaandag
-        '2025-12-25', // Kerstmis
-        '2025-12-26'  // Tweede Kerstdag
+        '2025-01-01','2025-04-18','2025-04-21','2025-04-27','2025-05-05','2025-05-29','2025-06-09','2025-12-25','2025-12-26'
     ];
 
     dateInput.addEventListener('input', function() {
@@ -88,7 +80,6 @@ function disableNonWorkingDays() {
             this.value = '';
             return;
         }
-
         if (holidays2025.includes(dateString)) {
             alert('Deze datum is een nationale feestdag. Kies een andere werkdag.');
             this.value = '';
@@ -99,9 +90,16 @@ function disableNonWorkingDays() {
     dateInput.setAttribute('min', today);
 }
 
-// Formulier verzenden
+// Formulier verzenden met reCAPTCHA check
 document.getElementById('wijziging-form').addEventListener('submit', function(event) {
     event.preventDefault();
+
+    // Controleer reCAPTCHA
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        alert('Vink de reCAPTCHA aan voordat u verzendt.');
+        return;
+    }
 
     const form = this;
     const formData = new FormData(form);
@@ -111,27 +109,6 @@ document.getElementById('wijziging-form').addEventListener('submit', function(ev
     let emailBody = `Beste ${voorletters} ${achternaam},\n\nHartelijk dank voor het doorgeven van uw wijziging bij Klaas Vis Assurantiekantoor. Wij hebben uw aanvraag ontvangen en verwerken deze zo spoedig mogelijk.\n\nHieronder vindt u een overzicht van de door u ingevulde gegevens:\n`;
 
     for (let [key, value] of formData.entries()) {
-        if (value && value.trim() !== '') {
-            emailBody += `${key}: ${value}\n`;
-        }
-    }
-document.getElementById('contact-form').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const recaptchaResponse = grecaptcha.getResponse();
-    if (!recaptchaResponse) {
-        alert("Bevestig eerst dat u geen robot bent (klik op de reCAPTCHA).");
-        return;
-    }
-
-    const form = this;
-    const formData = new FormData(form);
-    let email = formData.get('email') || 'rbuijs@klaasvis.nl';
-    let emailBody = "Contactverzoek Klaas Vis Assurantiekantoor\n\n";
-
-    // ⛔ reCAPTCHA niet meesturen
-    for (let [key, value] of formData.entries()) {
-        if (key === 'g-recaptcha-response') continue; // ⬅️ deze regel voorkomt het meesturen
         if (value && value.trim() !== '') {
             emailBody += `${key}: ${value}\n`;
         }
@@ -156,6 +133,7 @@ document.getElementById('contact-form').addEventListener('submit', function (eve
         console.log("E-mail naar klant succesvol verzonden");
         setTimeout(() => {
             document.getElementById('loadingScreen').style.display = 'none';
+            grecaptcha.reset(); // reset reCAPTCHA na verzenden
             window.location.href = "https://www.klaasvis.nl";
         }, 2000);
     })
@@ -166,47 +144,26 @@ document.getElementById('contact-form').addEventListener('submit', function (eve
     });
 });
 
-// Chatbase chatbot integratie
+// Chatbase integratie
 (function() {
     if (!window.chatbase || window.chatbase('getState') !== 'initialized') {
-        window.chatbase = (...args) => {
-            if (!window.chatbase.q) {
-                window.chatbase.q = [];
-            }
-            window.chatbase.q.push(args);
-        };
-        window.chatbase = new Proxy(window.chatbase, {
-            get(target, prop) {
-                if (prop === 'q') {
-                    return target.q;
-                }
-                return (...args) => target(prop, ...args);
-            }
-        });
+        window.chatbase = (...args) => { if (!window.chatbase.q) window.chatbase.q = []; window.chatbase.q.push(args); };
+        window.chatbase = new Proxy(window.chatbase, { get(target, prop) { if(prop==='q') return target.q; return (...args) => target(prop,...args); }});
     }
     const onLoad = function() {
         const script = document.createElement('script');
         script.src = 'https://www.chatbase.co/embed.min.js';
         script.id = 'C60jEJW_QuVD7X3vE5rzE';
-        script.setAttribute('domain', 'www.chatbase.co');
+        script.setAttribute('domain','www.chatbase.co');
         document.body.appendChild(script);
     };
-    if (document.readyState === 'complete') {
-        onLoad();
-    } else {
-        window.addEventListener('load', onLoad);
-    }
+    if (document.readyState === 'complete') onLoad(); else window.addEventListener('load', onLoad);
 })();
 
-// Event listeners toevoegen
+// Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     const selectElement = document.getElementById('wijziging-type');
-    if (selectElement) {
-        selectElement.addEventListener('change', toggleFields);
-        toggleFields();
-    } else {
-        console.error("Element met ID 'wijziging-type' niet gevonden!");
-    }
+    if (selectElement) { selectElement.addEventListener('change', toggleFields); toggleFields(); }
 
     const postcode = document.getElementById('nieuwe-postcode');
     const huisnummer = document.getElementById('nieuwe-huisnummer');
@@ -215,9 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (postcode) postcode.addEventListener('blur', fetchPostcodeData);
     if (huisnummer) huisnummer.addEventListener('blur', fetchPostcodeData);
-    if (huidigKenteken) huidigKenteken.addEventListener('blur', () => fetchRDWData('huidig-kenteken', 'huidig-merk', 'huidig-model'));
-    if (nieuwKenteken) nieuwKenteken.addEventListener('blur', () => fetchRDWData('nieuw-kenteken', 'nieuw-merk', 'nieuw-model'));
+    if (huidigKenteken) huidigKenteken.addEventListener('blur', () => fetchRDWData('huidig-kenteken','huidig-merk','huidig-model'));
+    if (nieuwKenteken) nieuwKenteken.addEventListener('blur', () => fetchRDWData('nieuw-kenteken','nieuw-merk','nieuw-model'));
 
     disableNonWorkingDays();
-
 });
