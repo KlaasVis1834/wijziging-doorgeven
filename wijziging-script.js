@@ -108,9 +108,13 @@ document.getElementById('wijziging-form').addEventListener('submit', function(ev
     let achternaam = formData.get('achternaam') || '';
     let emailBody = `Beste ${voorletters} ${achternaam},\n\nHartelijk dank voor het doorgeven van uw wijziging bij Klaas Vis Assurantiekantoor. Wij hebben uw aanvraag ontvangen en verwerken deze zo spoedig mogelijk.\n\nHieronder vindt u een overzicht van de door u ingevulde gegevens:\n`;
 
-    for (let [key, value] of formData.entries()) {
-        if (value && value.trim() !== '') {
-            emailBody += `${key}: ${value}\n`;
+for (let [key, value] of formData.entries()) {
+    // reCAPTCHA-veld niet meesturen
+    if (key === 'g-recaptcha-response') continue;
+
+    if (value && value.trim() !== '') {
+        emailBody += `${key}: ${value}\n`;
+    }
         }
     }
 
@@ -177,3 +181,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     disableNonWorkingDays();
 });
+
