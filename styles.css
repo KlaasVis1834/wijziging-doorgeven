@@ -37,7 +37,7 @@ h1 {
 /* Container */
 .container {
     flex: 1;
-    max-width: 1200px;
+    max-width: 1200px; /* Vergroot voor zij-aan-zij layout */
     margin: 40px auto;
     padding: 0 20px;
 }
