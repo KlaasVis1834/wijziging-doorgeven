@@ -115,6 +115,27 @@ document.getElementById('wijziging-form').addEventListener('submit', function(ev
             emailBody += `${key}: ${value}\n`;
         }
     }
+document.getElementById('contact-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        alert("Bevestig eerst dat u geen robot bent (klik op de reCAPTCHA).");
+        return;
+    }
+
+    const form = this;
+    const formData = new FormData(form);
+    let email = formData.get('email') || 'rbuijs@klaasvis.nl';
+    let emailBody = "Contactverzoek Klaas Vis Assurantiekantoor\n\n";
+
+    // ⛔ reCAPTCHA niet meesturen
+    for (let [key, value] of formData.entries()) {
+        if (key === 'g-recaptcha-response') continue; // ⬅️ deze regel voorkomt het meesturen
+        if (value && value.trim() !== '') {
+            emailBody += `${key}: ${value}\n`;
+        }
+    }
 
     emailBody += `\nHeeft u in de tussentijd vragen? U kunt ons bereiken via:\n- E-mail: info@klaasvis.nl\n- Telefoon: 075 – 631 42 61 (werkdagen 09:00-16:00)\n\nMet vriendelijke groet,\nTeam Klaas Vis Assurantiekantoor\nZuiderweg 7, 1456 NC Wijdewormer\nwww.klaasvis.nl`;
 
@@ -198,4 +219,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nieuwKenteken) nieuwKenteken.addEventListener('blur', () => fetchRDWData('nieuw-kenteken', 'nieuw-merk', 'nieuw-model'));
 
     disableNonWorkingDays();
+
 });
