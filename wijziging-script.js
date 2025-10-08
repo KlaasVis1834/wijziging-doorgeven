@@ -1,20 +1,8 @@
-// ======================
-// Menubalk (hamburger menu)
-// ======================
-const hamburger = document.querySelector('.hamburger');
-const navList = document.querySelector('.nav-list');
 
-if (hamburger && navList) {
-    hamburger.addEventListener('click', () => {
-        navList.classList.toggle('active');
-    });
-}
-
-// ======================
-// Dynamische velden wijziging-type
-// ======================
+// Toon/verberg velden op basis van wijziging-type
 function toggleFields() {
-    const wijzigingType = document.getElementById('wijziging-type')?.value;
+    const wijzigingType = document.getElementById('wijziging-type').value;
+    console.log("Gekozen wijziging-type:", wijzigingType);
     const fieldGroups = {
         'adreswijziging': ['adreswijziging-fields-postcode', 'adreswijziging-fields-huisnummer', 'adreswijziging-fields-adres', 'adreswijziging-fields-datum'],
         'motorvoertuigwijziging': ['motorvoertuigwijziging-fields-datum', 'motorvoertuigwijziging-fields-polisnummer', 'motorvoertuigwijziging-fields-huidig-kenteken', 'motorvoertuigwijziging-fields-huidig-merk', 'motorvoertuigwijziging-fields-huidig-model', 'motorvoertuigwijziging-fields-nieuw-kenteken', 'motorvoertuigwijziging-fields-nieuw-merk', 'motorvoertuigwijziging-fields-nieuw-model'],
@@ -24,13 +12,11 @@ function toggleFields() {
         'anders': ['anders-fields']
     };
 
-    // Verberg alles eerst
     Object.values(fieldGroups).flat().forEach(id => {
         const element = document.getElementById(id);
         if (element) element.classList.add('hidden');
     });
 
-    // Toon gekozen velden
     if (fieldGroups[wijzigingType]) {
         fieldGroups[wijzigingType].forEach(id => {
             const element = document.getElementById(id);
@@ -39,18 +25,10 @@ function toggleFields() {
     }
 }
 
-// ======================
-// Postcode API (adreswijziging)
-// ======================
+// Postcode API voor adreswijziging
 async function fetchPostcodeData() {
-    const postcodeInput = document.getElementById('nieuwe-postcode');
-    const huisnummerInput = document.getElementById('nieuwe-huisnummer');
-    if (!postcodeInput || !huisnummerInput) return;
-
-    const postcode = postcodeInput.value.replace(/\s/g, '');
-    const huisnummer = huisnummerInput.value;
-    if (!postcode || !huisnummer) return;
-
+    const postcode = document.getElementById('nieuwe-postcode').value.replace(/\s/g, '');
+    const huisnummer = document.getElementById('nieuwe-huisnummer').value;
     const url = `https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${postcode} ${huisnummer}&rows=1`;
 
     try {
@@ -64,16 +42,9 @@ async function fetchPostcodeData() {
     }
 }
 
-// ======================
-// RDW API (motorvoertuig)
-// ======================
+// RDW API voor motorvoertuigwijziging
 async function fetchRDWData(kentekenField, merkField, modelField) {
-    const kentekenInput = document.getElementById(kentekenField);
-    if (!kentekenInput) return;
-
-    const kenteken = kentekenInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (!kenteken) return;
-
+    const kenteken = document.getElementById(kentekenField).value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     const url = `https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=${kenteken}`;
 
     try {
@@ -91,20 +62,22 @@ async function fetchRDWData(kentekenField, merkField, modelField) {
     }
 }
 
-// ======================
-// Kalender logica (werkdagen & feestdagen)
-// ======================
+// Kalender logica voor openingsdagen
 function disableNonWorkingDays() {
     const dateInput = document.getElementById('voorkeur-datum');
     if (!dateInput) return;
 
     const holidays2025 = [
-        '2025-01-01', '2025-04-18', '2025-04-21', '2025-04-27', '2025-05-05', 
-        '2025-05-29', '2025-06-09', '2025-12-25', '2025-12-26'
+        '2025-01-01', // Nieuwjaardag
+        '2025-04-18', // Goede Vrijdag
+        '2025-04-21', // Paasmaandag
+        '2025-04-27', // Koningsdag
+        '2025-05-05', // Bevrijdingsdag
+        '2025-05-29', // Hemelvaartsdag
+        '2025-06-09', // Pinkstermaandag
+        '2025-12-25', // Kerstmis
+        '2025-12-26'  // Tweede Kerstdag
     ];
-
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
 
     dateInput.addEventListener('input', function() {
         const selectedDate = new Date(this.value);
@@ -122,74 +95,120 @@ function disableNonWorkingDays() {
             this.value = '';
         }
     });
+
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
 }
 
-// ======================
-// Formulier verzenden (EmailJS + reCAPTCHA)
-// ======================
-document.addEventListener('DOMContentLoaded', () => {
+// Formulier verzenden
+document.getElementById('wijziging-form').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-    // Formulier submit
-    const form = document.getElementById('wijziging-form');
-    if (form) {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
+    const form = this;
+    const formData = new FormData(form);
+    let email = formData.get('email') || 'rbuijs@klaasvis.nl';
+    let voorletters = formData.get('voorletters') || '';
+    let achternaam = formData.get('achternaam') || '';
+    let emailBody = `Beste ${voorletters} ${achternaam},\n\nHartelijk dank voor het doorgeven van uw wijziging bij Klaas Vis Assurantiekantoor. Wij hebben uw aanvraag ontvangen en verwerken deze zo spoedig mogelijk.\n\nHieronder vindt u een overzicht van de door u ingevulde gegevens:\n`;
 
-            // reCAPTCHA check
-            const recaptchaResponse = grecaptcha.getResponse();
-            if (!recaptchaResponse) {
-                alert("Bevestig eerst dat u geen robot bent (klik op de reCAPTCHA).");
-                return;
+    for (let [key, value] of formData.entries()) {
+        if (value && value.trim() !== '') {
+            emailBody += `${key}: ${value}\n`;
+        }
+    }
+document.getElementById('contact-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        alert("Bevestig eerst dat u geen robot bent (klik op de reCAPTCHA).");
+        return;
+    }
+
+    const form = this;
+    const formData = new FormData(form);
+    let email = formData.get('email') || 'rbuijs@klaasvis.nl';
+    let emailBody = "Contactverzoek Klaas Vis Assurantiekantoor\n\n";
+
+    // ⛔ reCAPTCHA niet meesturen
+    for (let [key, value] of formData.entries()) {
+        if (key === 'g-recaptcha-response') continue; // ⬅️ deze regel voorkomt het meesturen
+        if (value && value.trim() !== '') {
+            emailBody += `${key}: ${value}\n`;
+        }
+    }
+
+    emailBody += `\nHeeft u in de tussentijd vragen? U kunt ons bereiken via:\n- E-mail: info@klaasvis.nl\n- Telefoon: 075 – 631 42 61 (werkdagen 09:00-16:00)\n\nMet vriendelijke groet,\nTeam Klaas Vis Assurantiekantoor\nZuiderweg 7, 1456 NC Wijdewormer\nwww.klaasvis.nl`;
+
+    document.getElementById('loadingScreen').style.display = 'flex';
+
+    emailjs.send("service_hcds2qk", "template_xk3jqlc", {
+        message: emailBody,
+        reply_to: email
+    })
+    .then(() => {
+        console.log("E-mail naar kantoor succesvol verzonden");
+        return emailjs.send("service_hcds2qk", "template_gco2wsm", {
+            to_email: email,
+            message: emailBody
+        });
+    })
+    .then(() => {
+        console.log("E-mail naar klant succesvol verzonden");
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            window.location.href = "https://www.klaasvis.nl";
+        }, 2000);
+    })
+    .catch((error) => {
+        console.error("Fout bij verzenden:", error);
+        document.getElementById('loadingScreen').style.display = 'none';
+        alert(`Er is een fout opgetreden: ${error.text}. Probeer het later opnieuw.`);
+    });
+});
+
+// Chatbase chatbot integratie
+(function() {
+    if (!window.chatbase || window.chatbase('getState') !== 'initialized') {
+        window.chatbase = (...args) => {
+            if (!window.chatbase.q) {
+                window.chatbase.q = [];
             }
-
-            const formData = new FormData(form);
-            const email = formData.get('email') || 'rbuijs@klaasvis.nl';
-            let emailBody = `Contactverzoek Klaas Vis Assurantiekantoor\n\n`;
-
-            for (let [key, value] of formData.entries()) {
-                if (key === 'g-recaptcha-response') continue; // niet meesturen
-                if (value && value.trim() !== '') {
-                    emailBody += `${key}: ${value}\n`;
+            window.chatbase.q.push(args);
+        };
+        window.chatbase = new Proxy(window.chatbase, {
+            get(target, prop) {
+                if (prop === 'q') {
+                    return target.q;
                 }
+                return (...args) => target(prop, ...args);
             }
-
-            emailBody += `\nHeeft u in de tussentijd vragen? U kunt ons bereiken via:\n- E-mail: info@klaasvis.nl\n- Telefoon: 075 – 631 42 61 (werkdagen 09:00-16:00)\n\nMet vriendelijke groet,\nTeam Klaas Vis Assurantiekantoor\nZuiderweg 7, 1456 NC Wijdewormer\nwww.klaasvis.nl`;
-
-            document.getElementById('loadingScreen').style.display = 'flex';
-
-            // EmailJS verzenden
-            emailjs.send("service_hcds2qk", "template_xk3jqlc", {
-                message: emailBody,
-                reply_to: email
-            })
-            .then(() => {
-                return emailjs.send("service_hcds2qk", "template_gco2wsm", {
-                    to_email: email,
-                    message: emailBody
-                });
-            })
-            .then(() => {
-                setTimeout(() => {
-                    document.getElementById('loadingScreen').style.display = 'none';
-                    window.location.href = "https://www.klaasvis.nl";
-                }, 2000);
-            })
-            .catch(error => {
-                console.error("Fout bij verzenden:", error);
-                document.getElementById('loadingScreen').style.display = 'none';
-                alert(`Er is een fout opgetreden: ${error.text}. Probeer het later opnieuw.`);
-            });
         });
     }
+    const onLoad = function() {
+        const script = document.createElement('script');
+        script.src = 'https://www.chatbase.co/embed.min.js';
+        script.id = 'C60jEJW_QuVD7X3vE5rzE';
+        script.setAttribute('domain', 'www.chatbase.co');
+        document.body.appendChild(script);
+    };
+    if (document.readyState === 'complete') {
+        onLoad();
+    } else {
+        window.addEventListener('load', onLoad);
+    }
+})();
 
-    // Event listeners voor dynamische velden
-    const wijzigingSelect = document.getElementById('wijziging-type');
-    if (wijzigingSelect) {
-        wijzigingSelect.addEventListener('change', toggleFields);
+// Event listeners toevoegen
+document.addEventListener('DOMContentLoaded', () => {
+    const selectElement = document.getElementById('wijziging-type');
+    if (selectElement) {
+        selectElement.addEventListener('change', toggleFields);
         toggleFields();
+    } else {
+        console.error("Element met ID 'wijziging-type' niet gevonden!");
     }
 
-    // Postcode / RDW listeners
     const postcode = document.getElementById('nieuwe-postcode');
     const huisnummer = document.getElementById('nieuwe-huisnummer');
     const huidigKenteken = document.getElementById('huidig-kenteken');
@@ -197,31 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (postcode) postcode.addEventListener('blur', fetchPostcodeData);
     if (huisnummer) huisnummer.addEventListener('blur', fetchPostcodeData);
-    if (huidigKenteken) huidigKenteken.addEventListener('blur', () => fetchRDWData('huidig-kenteken','huidig-merk','huidig-model'));
-    if (nieuwKenteken) nieuwKenteken.addEventListener('blur', () => fetchRDWData('nieuw-kenteken','nieuw-merk','nieuw-model'));
+    if (huidigKenteken) huidigKenteken.addEventListener('blur', () => fetchRDWData('huidig-kenteken', 'huidig-merk', 'huidig-model'));
+    if (nieuwKenteken) nieuwKenteken.addEventListener('blur', () => fetchRDWData('nieuw-kenteken', 'nieuw-merk', 'nieuw-model'));
 
     disableNonWorkingDays();
-
-    // ======================
-    // Chatbase chatbot
-    // ======================
-    if (!window.chatbase || window.chatbase('getState') !== 'initialized') {
-        window.chatbase = (...args) => { 
-            if (!window.chatbase.q) window.chatbase.q = []; 
-            window.chatbase.q.push(args); 
-        };
-        window.chatbase = new Proxy(window.chatbase, {
-            get(target, prop) {
-                if (prop === 'q') return target.q;
-                return (...args) => target(prop, ...args);
-            }
-        });
-    }
-
-    const chatScript = document.createElement('script');
-    chatScript.src = 'https://www.chatbase.co/embed.min.js';
-    chatScript.id = 'C60jEJW_QuVD7X3vE5rzE';
-    chatScript.setAttribute('domain', 'www.chatbase.co');
-    document.body.appendChild(chatScript);
 
 });
