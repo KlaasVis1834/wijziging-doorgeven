@@ -1,4 +1,3 @@
-
 // Toon/verberg velden op basis van wijziging-type
 function toggleFields() {
     const wijzigingType = document.getElementById('wijziging-type').value;
