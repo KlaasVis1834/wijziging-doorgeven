@@ -21,11 +21,6 @@ body {
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
 }
 
 .logo img {
@@ -39,50 +34,11 @@ h1 {
     margin-top: 10px;
 }
 
-/* Menubalk */
-.nav {
-    margin-top: 10px;
-    position: relative;
-}
-
-.nav-list {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.nav-list li a {
-    text-decoration: none;
-    color: #003087;
-    font-weight: 500;
-    padding: 8px 12px;
-    transition: background-color 0.3s, color 0.3s;
-    border-radius: 5px;
-}
-
-.nav-list li a:hover {
-    background-color: #003087;
-    color: #fff;
-}
-
-.hamburger {
-    display: none;
-    font-size: 24px;
-    color: #003087;
-    background: none;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
 /* Container */
 .container {
     flex: 1;
-    max-width: 1200px;
-    margin: 140px auto 40px; /* rekening met fixed header */
+    max-width: 1200px; /* Vergroot voor zij-aan-zij layout */
+    margin: 40px auto;
     padding: 0 20px;
 }
 
@@ -103,7 +59,77 @@ h1 {
     flex: 1;
     min-width: 300px;
 }
+/* Navigatiebalk */
+.nav {
+    background-color: #003087;
+    padding: 10px 0;
+    text-align: center;
+}
 
+.nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-list li a:hover {
+    background-color: #0056b3;
+}
+
+/* Hamburger voor mobiel */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+/* Mobiel menu */
+@media (max-width: 768px) {
+    .nav-list {
+        display: none;
+        flex-direction: column;
+        background-color: #003087;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        z-index: 10;
+        padding: 15px 0;
+    }
+
+    .nav-list.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+        position: absolute;
+        top: 25px;
+        right: 25px;
+    }
+
+    .nav-list li a {
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+}
 h2 {
     font-size: 1.5rem;
     color: #003087;
@@ -219,7 +245,7 @@ h2 {
     margin-top: 20px;
 }
 
-/* Loadingscreen */
+/* Loadingscreen zoals Inboedelwaardemeter */
 .loading-screen {
     display: none;
     position: fixed;
@@ -254,7 +280,7 @@ h2 {
     100% { transform: rotate(360deg); }
 }
 
-/* Footer */
+/* Footer zoals Inboedelwaardemeter */
 .footer {
     background-color: #003087;
     color: #fff;
@@ -269,48 +295,16 @@ h2 {
 }
 
 /* Mobiele aanpassingen */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     .container {
-        margin: 120px auto 20px;
+        margin: 20px auto;
         padding: 0 10px;
     }
 
-    .hamburger {
-        display: block;
+    .contact-section {
+        padding: 20px;
     }
 
-    .nav-list {
-        display: none;
-        flex-direction: column;
-        gap: 10px;
-        background-color: #fff;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        padding: 15px 0;
-    }
-
-    .nav-list.active {
-        display: flex;
-    }
-
-    .nav-list li {
-        text-align: center;
-    }
-
-    .nav-list li a {
-        display: block;
-        padding: 10px;
-    }
-
-    .content-wrapper {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 600px) {
     h1 {
         font-size: 1.5rem;
     }
